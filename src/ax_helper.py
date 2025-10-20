@@ -30,7 +30,6 @@ from ax.generation_strategy.center_generation_node import CenterGenerationNode
 from ax.generation_strategy.transition_criterion import MinTrials
 from ax.adapter.registry import Generators
 
-from src.model_generation import HeteroWhiteSGP
 from src.BayesClientManager import BayesClientManager
 
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -373,6 +372,34 @@ class BatchClientHandler:
                     trial_index=len(self.client._experiment.trials) - 1,
                     raw_data={self.response_col: response(params)},
                 )
+
+
+    def get_grouped_obs(self):
+        df = self.get_batch_observations().dropna(subset=[self.response_col]).copy()
+        params = list(self.dim_names)
+        keys = df[params].apply(tuple, axis=1)
+        df["group"] = pd.factorize(keys)[0] + 1
+        return df
+    
+    def get_group_stats(self):
+
+        grouped = self.get_grouped_obs().groupby('group')
+        # compute std of predicted response per group (Series indexed by group)
+        pred_response_var = grouped[self.response_col].std()
+
+        # compute means only over numeric columns to avoid TypeError on object dtypes
+        means = grouped.mean(numeric_only=True)
+
+        pred_response_var = pred_response_var.reindex(means.index)
+
+        if "trial_index" in means.columns:
+            means = means.drop(columns=["trial_index"])
+
+        means["pred_response_var"] = pred_response_var.values
+        means.dropna(inplace=True)
+        return means
+        
+
 from botorch.acquisition import qLogExpectedImprovement
 from botorch.models import SingleTaskGP
 
@@ -398,11 +425,7 @@ class SequentialRuns:
         noise_fn=None,
         plot_each=False,
     ):
-        # Build or obtain an Ax Client depending on what was supplied as
-        # `range_parameters` during construction. Acceptable inputs are:
-        # - a BayesClientManager instance (will use its _create_ax_client()),
-        # - a dict of bounds in the format used by BayesClientManager,
-        # - a sequence of RangeParameterConfig objects.
+
         client = None
 
         def _bounds_dict_to_range_params(bounds: dict):
@@ -419,9 +442,7 @@ class SequentialRuns:
                 )
             return params
 
-        # If a manager-like object was passed in, ask it to create a client.
-        # Use duck-typing so both the manager defined here or an external
-        # `BayesClientManager` can be used interchangeably.
+
         if hasattr(self.range_parameters, "_create_ax_client") and callable(
             getattr(self.range_parameters, "_create_ax_client")
         ):
@@ -446,7 +467,7 @@ class SequentialRuns:
         generation_strategy = get_full_strategy(gp=gp, acqf_class=acqf_class)
         client.set_generation_strategy(generation_strategy=generation_strategy)
 
-        handler = BatchClientHandler(
+        self.handler = BatchClientHandler(
             client,
             self.test_fn,
             self.dim_names,
@@ -454,16 +475,18 @@ class SequentialRuns:
             batch_size=batch_size,
             range_params=self.range_parameters,
         )
-        handler.get_next_batch(batch_size)
+        self.handler.get_next_batch(batch_size)
 
         for _ in range(n_runs):
-            handler.comp_noise_and_repeats(noise_fn=noise_fn, repeats=technical_repeats)
-            handler.get_next_batch()
+            self.handler.comp_noise_and_repeats(noise_fn=noise_fn, repeats=technical_repeats)
+            self.handler.get_next_batch()
             if plot_each:
-                handler.plot_GP(gp, figsize=(8, 4))
+                self.handler.plot_GP(gp, figsize=(8, 4))
                 #plot_test()
                 #plt.show()
-        return handler
+        return self.handler
+    
+
 
 
 

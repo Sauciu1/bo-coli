@@ -14,9 +14,6 @@ BRAND_COLOURS = [
         "#D6FF36",
     ]
 
-
-
-
 # Add all TTF/OTF fonts from the directory
 def load_fonts(font_dir: str) -> None:
     """Loads all .tff, .otf fonts from a folder"""
@@ -27,10 +24,6 @@ def load_fonts(font_dir: str) -> None:
             fm.fontManager.addfont(font_path)
             fonts.append(font_path)
     return fonts
-
-
-
-
 
 def set_figure_style(axes_colour: str, prop_cycle: list[str]):
     plt.rcParams.update(
@@ -53,16 +46,10 @@ def set_figure_style(axes_colour: str, prop_cycle: list[str]):
     plt.rcParams["axes.spines.top"] = False
     plt.rcParams["axes.spines.right"] = False
 
- 
-
-
-
-
-
 def set_font_to_Brisbane() -> None:
     
     font_name = None
-    fonts = load_fonts("src/fonts/brisbane-font-family")
+    fonts = load_fonts("src/fonts/minor_helpers/brisbane-font-family")
     if fonts:
         ttfont = TTFont(fonts[0])
         name_record = ttfont["name"].getName(1, 3, 1)  # Font Family name
@@ -92,10 +79,6 @@ if __name__ == "__main__":
     plt.ylabel("Y-axis Label")
     plt.show()
 
-
 if __name__ == "__main__":
-
-
     set_figure_style(axes_colour, BRAND_COLOURS)
-
     set_font_to_Brisbane()

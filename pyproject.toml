@@ -3,11 +3,11 @@ name = "bo-coli"
 version = "0.1.0"
 description = "Bayesian Optimization for Biological experiments"
 authors = ["Povilas Šaučiuvienas <p.sauciuvienas@gmail.com>"]
-readme = "ReadMe.md"
+readme = "README.md"
 packages = [{include = "src", from = "."}]
 
 [tool.poetry.dependencies]
-python = ">=3.11"
+python = ">=3.11,<3.12"
 numpy = "*"
 pandas = "*"
 ipykernel = "*"
@@ -22,9 +22,16 @@ streamlit = "*"
 nbformat = "*"
 numpydoc = "^1.9.0"
 kaleido = "^1.1.0"
+openpyxl = "^3.1.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

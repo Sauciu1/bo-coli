@@ -1,5 +1,5 @@
 """
-UI Module for BO-Coli Bayesian Optimization Interface
+UI Module for BioKernel Bayesian Optimization Interface
 
 This module provides a comprehensive Streamlit-based user interface for 
 Bayesian optimization experiments, including experiment initialization,

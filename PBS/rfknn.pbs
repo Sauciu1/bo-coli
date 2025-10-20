@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=128:mem=256gb -l walltime=01:30:00
+#PBS -l select=1:ncpus=64:mem=100gb -l walltime=00:30:00
 
 cd projects/imperial
 
@@ -13,5 +13,5 @@ pip install poetry
 poetry lock
 
 poetry install --no-root
-poetry run python h6_simulations.py
+poetry run python pbs_rfknn.py.py
 

@@ -65,19 +65,20 @@ class MaternKernelSGP(SingleTaskGP):
     """A SingleTaskGP with a Matern Kernel"""
     bocoli_name = "MaternKernelSGP"
     bocoli_type = "gp"
-    bocoli_description = """Single Task Gaussian Process with Matern Kernel.
-    No explicit technical repeat handling."""
+    bocoli_description = """Single Task Gaussian Process with a gamma noise priori Matern Kernel.
+    No explicit technical repeat handling. """
 
-    def __init__(self, train_X, train_Y, **kwargs):
-
-
-        matern_kernel = MaternKernel(nu=2.5)
+    def __init__(self, train_X, train_Y, noise_concentration: float = 1.0, noise_rate: float = 1.0, **kwargs):
+        matern_kernel = MaternKernel(nu=1.5)
         covar_module = ScaleKernel(matern_kernel)
-
+        likelihood = GaussianLikelihood(
+            noise_prior=GammaPrior(noise_concentration, noise_rate)
+        )
         super().__init__(
             train_X=train_X,
             train_Y=train_Y,
             covar_module=covar_module,
+            likelihood=likelihood,
             **kwargs
         )
 
@@ -116,11 +117,11 @@ class HeteroNoiseSGP(SingleTaskGP):
 class HeteroWhiteSGP(HeteroNoiseSGP):
     """Heteroscedastic GP with a minimum (0.05 quantile) white noise level.
     Explicitly designed to handle noise from technical repeats."""
-    bocoli_name = "HeteroWhiteSGP"
-    bocoli_type = "gp"
-    bocoli_description = """Heteroscedastic Gaussian Process with a minimum white noise level.
-    Designed to handle noise from technical repeats. Defaults to Matern Kernel if no technical
-    repeats are present."""
+   # bocoli_name = "HeteroWhiteSGP"
+    #bocoli_type = "gp"
+   # bocoli_description = """Heteroscedastic Gaussian Process with a minimum white noise level.
+   # Designed to handle noise from technical repeats. Defaults to Matern Kernel if no technical
+   # repeats are present."""
 
     def __init__(self, train_X, train_Y, quintile=0.05, **kwargs) -> None:
 

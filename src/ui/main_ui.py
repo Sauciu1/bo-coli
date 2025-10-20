@@ -84,7 +84,7 @@ class main_manager:
 
     def main_loop(self):
         """Handles the main UI loop for experiment management"""
-        st.title("BO-Coli: Bayesian Optimization for Biological Systems")
+        st.title("BioKernel: Bayesian Optimization for Biological Systems")
         if not st.session_state.get("experiment_created", False):
             self.loader._init_or_load_exp()
         else:
@@ -136,7 +136,7 @@ class main_manager:
         st.download_button(
             label="💾 Download Experiment Data",
             data=prepare_download_data(),
-            file_name=f"bo_coli_{self.bayes_manager.experiment_name}_{current_time}.pkl",
+            file_name=f"BioKernel_{self.bayes_manager.experiment_name}_{current_time}.pkl",
             mime="application/octet-stream",
             help="Download the complete experiment as a pickle file",
         )
@@ -149,7 +149,7 @@ class main_manager:
         st.download_button(
             label="𝄜 Download as .csv (CANNOT BE REUPLOADED)",
             data=prepare_csv_data(),
-            file_name=f"bo_coli_{self.bayes_manager.experiment_name}_{current_time}.csv",
+            file_name=f"BioKernel_{self.bayes_manager.experiment_name}_{current_time}.csv",
             mime="text/csv",
         )
 
@@ -184,7 +184,7 @@ class main_manager:
 if __name__ == "__main__":
 
     st.set_page_config(
-            page_title="BoColi Bayesian Optimization for Biological Systems",
+            page_title="BioKernel: Bayesian Optimization for Biological Systems",
             layout="wide",
             initial_sidebar_state="collapsed",
         )

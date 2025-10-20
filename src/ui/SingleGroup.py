@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import uuid
-from src.BayesClientManager import example_manager
 
 
 class SingleGroup:
@@ -197,8 +196,15 @@ class SingleGroup:
 
 
 if __name__ == "__main__":
+
+
+
+
     st.set_page_config(layout="wide")
     st.title("Single Group Example")
+
+    # Lazily import example_manager to avoid import-time side effects
+    from src.BayesClientManager import example_manager
 
     # Initialize session state
     if "bayes_manager" not in st.session_state:
@@ -216,7 +222,6 @@ if __name__ == "__main__":
         if st.session_state.groups[group_label].render():
             st.session_state.groups[group_label].write_data_to_manager()
         st.divider()
-
 
 
     if st.button("Get All Group Data"):

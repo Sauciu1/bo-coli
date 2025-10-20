@@ -1,9 +1,9 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=128:mem=256gb -l walltime=01:30:00
+#PBS -l select=1:ncpus=128:mem=256gb -l walltime=01:00:00
 
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
 conda activate bo_coli
-cd $HOME/projects/bo-coli
+cd $HOME/projects/imperial
 
 
 conda install pip
@@ -16,3 +16,6 @@ poetry run python h6_simulations.py
 
 
 conda create -y -n bo_coli python=3.13.0 ipython
+
+
+python /rds/general/user/ps2622/home/projects/imperial/h6_simulations.py

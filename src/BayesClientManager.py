@@ -6,7 +6,6 @@ from botorch.acquisition import qLogExpectedImprovement, qExpectedImprovement
 from ax import Client
 from src import ax_helper
 import numpy as np
-from src.model_generation import HeteroWhiteSGP, GammaNoiseSGP
 from src.gp_and_acq_f import BocoliClassLoader
 
 class BayesClientManager:
@@ -266,6 +265,16 @@ class BayesClientManager:
         else:
             best_idx = self.agg_stats["mean"].idxmax()
         return self.agg_stats.loc[best_idx, self.group_label]
+
+    def get_best_coordinates(self):
+        """Compatibility helper: return coordinates dict for best-performing group.
+
+        Returns None when there are no aggregated stats.
+        """
+        best_group = self.get_best_group()
+        if best_group is None:
+            return None
+        return self.get_group_coords(int(best_group))
 
     def get_group_coords(self, group_label:int):
         """Get the coordinates for a given group label"""

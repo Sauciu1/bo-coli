@@ -1,5 +1,5 @@
 ### About This App
-Welcome to BO-Coli, the application serves as a no-code enables designing no-code Bayesian Optimization **(BO)** experiments.
+Welcome to BioKernel, the application serves as a no-code enables designing no-code Bayesian Optimization **(BO)** experiments.
 
 BO allows the user to find the optimal parameters for a black-box response function, given a continuous parameter n-dimensional space. Bayesian Optimisation is the the most effective exploration technique and works well in multi-dimensional data.
 

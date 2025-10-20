@@ -1,14 +1,13 @@
 # Main src package
 # Import key modules for easy access
 from . import ax_helper
-from . import model_generation
 from . import GPVisualiser
 from . import toy_functions
 from . import distribution_functions
-from . import binary_notebook_helpers
-from . import stats_eval_helper
-from . import theme_branding
+from .helpers import hpc_helper
+from .helpers import theme_branding
 from .gp_and_acq_f import custom_gp_and_acq_f
+from . import helpers
 
 # Make commonly used functions available at package level
 from .ax_helper import get_full_strategy, get_guess_coords, silence_ax_client, get_obs_from_client
@@ -18,12 +17,10 @@ from .toy_functions import Hartmann6D
 
 __all__ = [
     'ax_helper',
-    'model_generation', 
     'GPVisualiser',
     'toy_functions',
     'distribution_functions',
-    'binary_notebook_helpers',
-    'stats_eval_helper',
+    'hpc_helper',
     'theme_branding',
     'get_full_strategy',
     'get_guess_coords', 
@@ -32,8 +29,9 @@ __all__ = [
 
     'GPVisualiserMatplotlib',
     'GPVisualiserPlotly',
-    'Hartmann6D'
-    'custom_gp_and_acq_f'
+    'Hartmann6D',
+    'custom_gp_and_acq_f',
+    'helpers'
 ]
 
 __author__ = 'Povilas Sauciuvienas'

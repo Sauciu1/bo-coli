@@ -75,8 +75,6 @@ class GPVisualiser:
 
 
     def _train_gp(self, gp: callable):
-
-
         train_X = self.scaler.fit_transform(self.obs_X_vals)
 
         if isinstance(train_X, pd.DataFrame):
@@ -90,12 +88,13 @@ class GPVisualiser:
         return gp(train_X, train_Y)
         
 
-    def _create_linspace(self, num_points: int = 100) -> list[Tensor]:
+    def _create_linspace(self, num_points: int = 300) -> list[Tensor]:
         linspaces = []
-        for i in range(self.obs_X.shape[1]):
+        self.bayes_manager.bounds
+        for name, bound in self.bayes_manager.bounds.items():
             grid = torch.linspace(
-                self.obs_X.iloc[:, i].min() * 0.95,
-                self.obs_X.iloc[:, i].max() * 1.05,
+                bound['lower_bound'] * 0.95,
+                bound['upper_bound'] * 1.05,
                 num_points,
                 dtype=dtype,
                 device=device,
@@ -180,7 +179,7 @@ class GPVisualiser:
 
         self.fig, axs = self._create_subplots(figsize=figsize)
 
-        linspace = self._create_linspace(100) if linspace is None else linspace
+        linspace = self._create_linspace()
 
         for i in range(self.obs_X.shape[1]):
             ax: plt.Axes = axs[i]
@@ -451,7 +450,7 @@ class GPVisualiserPlotly(GPVisualiser):
 
     def _vlines(self, ax, coordinates):
         # Get y-axis range for the subplot
-        y_range = [float(self.obs_y.min() * 0.95), float(self.obs_y.max() * 1.05)]
+        y_range = [float(self.obs_y.min() * 0.99), float(self.obs_y.max() * 1.01)]
         
         ax.fig.add_trace(
             go.Scatter(
@@ -578,7 +577,7 @@ class GPVisualiserPlotly(GPVisualiser):
 
         self.fig, axs = self._create_subplots(figsize=figsize)
 
-        linspace = self._create_linspace(100) if linspace is None else linspace
+        linspace = self._create_linspace() if linspace is None else linspace
         
         for i in range(self.obs_X.shape[1]):
             ax = axs[i]
