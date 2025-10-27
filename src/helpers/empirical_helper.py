@@ -181,10 +181,6 @@ class RFKNN(BaseEstimator, RegressorMixin):
     def predict(self, X):
         return self.knn_.predict(X)
 
-def get_RfKnn_pipe():
 
-    return Pipeline([
-    ("scale", StandardScaler()),
-    ("rf_smooth", RFKNN(rf_params=dict(n_estimators=400, min_samples_leaf=7), n_neighbors=30)),])
 
 

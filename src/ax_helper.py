@@ -331,7 +331,7 @@ class BatchClientHandler:
         return obs
 
     def plot_GP(self, gp: callable, coords=None, **kwargs):
-        from .GPVisualiser import GPVisualiserPlotly
+        from src.GPVisualiser import GPVisualiserPlotly
 
         obs = self.get_batch_observations()
         plotter = GPVisualiserPlotly.init_from_client(self.client, gp)
@@ -525,7 +525,7 @@ def construct_gen_spec(
                     "num_restarts": 20,
                     "sequential": False,
                     "options": {
-                        "batch_limit": 5,
+                        "batch_limit": 3,
                         "maxiter": 200,
                     },
                 },
@@ -652,12 +652,20 @@ def plot_test(fig=None):
     runs = tester.run(
         SingleTaskGP,
         n_runs=4,
-        technical_repeats=2,
+        technical_repeats=1,
         batch_size=3,
         noise_fn=noise_fn,
         plot_each=False,
         )
-    runs.plot_GP(SingleTaskGP, fig=fig)
-    None
+    
+    
+    data = runs.get_batch_observations()
+
+    return data
+
+
+if __name__ == "__main__":
+    print(plot_test())
+
 
 

@@ -26,6 +26,7 @@ openpyxl = "^3.1.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
+ipykernel = "^7.0.1"
 
 [tool.pytest.ini_options]
 pythonpath = [".", "src"]
