@@ -14,6 +14,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.neighbors import KNeighborsRegressor
 
 from scipy.interpolate import RBFInterpolator
+import matplotlib.pyplot as plt
 
 from sklearn.metrics import mean_squared_error
 def evaluate_model(model, X, y):
@@ -184,3 +185,59 @@ class RFKNN(BaseEstimator, RegressorMixin):
 
 
 
+def plot_ci_95(y_matrix:np.ndarray|pd.DataFrame, thr, title = 'Mean true_response with 95% CI across reruns'):
+
+    
+    y_matrix = y_matrix.T
+    mean = np.nanmean(y_matrix, axis=0)
+    std = np.nanstd(y_matrix, axis=0)
+    n = np.sum(~np.isnan(y_matrix), axis=0)
+    ci95 = 1.96 * std / np.sqrt(n)
+
+    x = np.arange(len(mean))
+
+    plt.figure(figsize=(10,5))
+    plt.plot(x, mean, label='Mean true_response')
+    plt.fill_between(x, mean - ci95, mean + ci95, color='b', alpha=0.2, label='95% CI')
+    plt.xlabel('Trial number')
+    plt.ylabel('True Response')
+    plt.hlines(y=thr, xmin=x.min(), xmax=x.max(), color='r', label =f"90% quintile {round(thr,2)}")
+    plt.title(title)
+    plt.legend()
+
+
+    return mean
+
+
+
+def group_trials(run, parameters, scaling_factor, threshold =0.90):
+    """get mean of technical repeats. Identify true positives and false positives"""
+    grouped = run.groupby(by=parameters + ["trial_name"])[
+        ["pred_response", "true_response"]
+    ].mean()
+    grouped["true_response"] = grouped["true_response"] / scaling_factor
+    grouped["pred_response"] = grouped["pred_response"] / scaling_factor
+
+    grouped["diff"] = grouped["pred_response"] - grouped["true_response"]
+    grouped.reset_index(inplace=True)
+    grouped.sort_values(by="trial_name", inplace=True, ascending=True)
+    grouped["trial_name"] = range(len(grouped["trial_name"]))
+
+    grouped["pred_true"] = grouped.pred_response >threshold
+    grouped["true_true"] = grouped.true_response >threshold
+    grouped["true_positive"] = grouped["pred_true"] & grouped["true_true"]
+    grouped["false_positive"] = grouped['pred_true'] & ~grouped["true_true"]
+
+    return grouped
+
+
+def add_true_response(run, signal_pipeline, parameters):
+    """Add responses that would be found given no noise"""
+    run.loc[:, "true_response"] = run.apply(
+        lambda row: signal_pipeline.predict(np.array([[row[p] for p in parameters]])),
+        axis=1,
+    )
+    run = run.dropna()
+    run.loc[:, "trial_name"] = run["trial_name"].map(lambda x: int(x.split("_")[0])).astype(int)
+    run = run.sort_values(by="trial_name", ascending=True)
+    return run
