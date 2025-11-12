@@ -1,22 +1,19 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
+from scipy.interpolate import RBFInterpolator
 
-from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, Normalizer, SplineTransformer
-from sklearn.metrics import mean_squared_error
+from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin, OneToOneFeatureMixin
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import ConstantKernel, RBF, WhiteKernel
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import Ridge
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.neighbors import KNeighborsRegressor
-
-from scipy.interpolate import RBFInterpolator
-import matplotlib.pyplot as plt
-
 from sklearn.metrics import mean_squared_error
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, Normalizer, SplineTransformer
 
 
 def evaluate_model(model, X, y):
@@ -284,3 +281,25 @@ def add_true_response(run, signal_pipeline: Pipeline, parameters):
     )
     run = run.sort_values(by="trial_name", ascending=True)
     return run
+
+
+class ClipTransformer(OneToOneFeatureMixin, TransformerMixin, RegressorMixin):
+    """Clips the input data to be within specified min and max values."""
+    def __init__(self, a_min=0, a_max=1):
+        self._is_fitted_ = True
+        self.a_min = a_min
+        self.a_max = a_max
+
+    def fit(self, X, y=None):
+        """No fitting necessary for clipping transformer."""
+
+        return self
+
+    def transform(self, X):
+        return np.clip(X, a_min=self.a_min, a_max=self.a_max)
+
+    def predict(self, X):
+
+        clip = np.clip(X, a_min=self.a_min, a_max=self.a_max)
+
+        return clip[0][0] if len(clip) == 1 else clip
