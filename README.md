@@ -35,7 +35,7 @@ http://localhost:8989/
 
 To support the users needs, custom gaussian process and acquisition functions (BOTorch and GPyTorch implementations) can easily be included in the UI.
 
-To do so you just need to add your desired custom class to the[src\gp_and_acq_f\custom_gp_and_acq_f.py](src\gp_and_acq_f\custom_gp_and_acq_f.py) file.
+To do so you just need to add your desired custom class to the[src\gp_and_acq_f\custom_gp_and_acq_f.py](./src/gp_and_acq_f/custom_gp_and_acq_f.py) file.
 
 Simplest example is just the wrapper for SingleTaskGP:
 
@@ -64,7 +64,7 @@ Afterwards, the app needs to be rerun (or docker image rebuilt). Please see the 
 
 # Simulations and the notebook
 
-Most important data is found at[.\notebooks\batch_bayesian_test.ipynb](.\notebooks\batch_bayesian_test.ipynb)
+Most important data is found at[.\notebooks\batch_bayesian_test.ipynb]([./notebooks/batch_bayesian_test.ipynb](./notebooks/confirmation_on_empyrical_data.ipynb))
 
 
 To run the project locally you will need python 3.11 installed on the system, from within project folder:
@@ -95,7 +95,7 @@ http://localhost:8989/
 
 ### Data Source
 
-The experimental data [data\melavonate_pathway\ao2c00483_si_002.xlsx](data\melavonate_pathway\ao2c00483_si_002.xlsx) used to confirm success of our BO was taken from:
+The experimental data [data/melavonate_pathway/ao2c00483_si_002.xlsx](data/melavonate_pathway/ao2c00483_si_002.xlsx) used to confirm success of our BO was taken from:
 
 ``` text
 @article{Shin2022,
@@ -113,7 +113,7 @@ The experimental data [data\melavonate_pathway\ao2c00483_si_002.xlsx](data\melav
 ```
 
 The analysis and extrapolation models used to generate the BO simulation run can be found at:
-[notebooks\confirmation_on_empyrical_data.ipynb](notebooks\confirmation_on_empyrical_data.ipynb)
+[notebooks/confirmation_on_empyrical_data.ipynb](notebooks/confirmation_on_empyrical_data.ipynb)
 
 ### Libraries Used:
 
